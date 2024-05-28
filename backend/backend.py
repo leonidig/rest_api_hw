@@ -1,10 +1,19 @@
-from typing import List
-from fastapi import FastAPI, Query
-from fastapi.exceptions import HTTPException
+from datetime import datetime
+from fastapi import FastAPI
+
 import random
 from translators import translate_text
 
+from os import getenv
+from dotenv import load_dotenv
+
+
 app = FastAPI()
+
+BACKEND_URL = getenv("BACKEND_URL")
+
+load_dotenv()
+key = getenv("key")
 
 
 @app.get("/")
@@ -17,15 +26,10 @@ def get_randword():
     words = ["mama", "mila", "ramu"]
     return random.choice(words)
 
-@app.get("/sum/")
-# this is a comment from leonid - url exemple  ->  /sum/?n=3&n=4 
-def get_calc(n: List[float] = Query(None)):
-    try:
-        result = sum(n)
-        return {"result": result}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    
+@app.get("/now")
+def get_date():
+    return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+
 
 
 @app.get('/trans/{word}')
